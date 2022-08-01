@@ -2,10 +2,11 @@ package main
 
 import (
 	"database/sql"
-	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/inciner8r/blog_backend_go/routes"
 )
 
 func main() {
@@ -17,10 +18,7 @@ func main() {
 	defer db.Close()
 
 	r := gin.Default()
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
+	r.Use(cors.Default())
+	routes.Routes(r)
 	r.Run()
 }

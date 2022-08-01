@@ -6,7 +6,3 @@ type Blog struct {
 	Description string `json:"description"`
 	Content     string `json:"content"`
 }
-db, err := sql.Open("mysql", "user:password@/dbname")
-if err != nil {
-	panic(err)
-}
