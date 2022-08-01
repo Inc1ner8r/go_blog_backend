@@ -1,13 +1,21 @@
 package main
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/inciner8r/blog_backend_go/routes"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
+
+	db, err := sql.Open("mysql", "root:root@tcp(127.0.0.1:3306)/test")
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+
 	r := gin.Default()
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
@@ -15,5 +23,4 @@ func main() {
 		})
 	})
 	r.Run()
-	routes.Test()
 }
