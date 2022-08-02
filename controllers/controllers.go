@@ -26,13 +26,20 @@ func initDB() *gorm.DB {
 var db = initDB()
 
 func CreateBlog(c *gin.Context) {
+	var blog models.Blog
 
 	if err := c.BindJSON(&blog); err != nil {
+		fmt.Println("err1")
 		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		return
 	}
-	var blog models.Blog
+	fmt.Println(blog.CreatedAt)
+
 	if err := db.Create(&blog); err != nil {
-		log.Fatalln((err))
+		fmt.Println(err)
 	}
+}
+
+func displayBlogs(c *gin.Context) {
+	fmt.Println("kk")
 }

@@ -10,7 +10,7 @@ import (
 func Routes(router *gin.Engine) {
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
+			"message": "api is up",
 		})
 	})
 
