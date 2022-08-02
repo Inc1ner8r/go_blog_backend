@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -17,6 +18,8 @@ func initDB() *gorm.DB {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	db.AutoMigrate(&models.Blog{})
+	fmt.Println("db init")
 	return db
 }
 
@@ -24,12 +27,12 @@ var db = initDB()
 
 func CreateBlog(c *gin.Context) {
 
-	var blog models.Blog
-	if err := db.Create(&blog); err != nil {
-		log.Fatalln((err))
-	}
 	if err := c.BindJSON(&blog); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		return
+	}
+	var blog models.Blog
+	if err := db.Create(&blog); err != nil {
+		log.Fatalln((err))
 	}
 }
