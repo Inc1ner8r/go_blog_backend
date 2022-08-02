@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,7 @@ func initDB() *gorm.DB {
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
+		log.Fatalln(err)
 	}
 	return db
 }
@@ -23,8 +25,9 @@ var db = initDB()
 func CreateBlog(c *gin.Context) {
 
 	var blog models.Blog
-	results, err := db.Query("select * from test_table")
-
+	if err := db.Create(&blog); err != nil {
+		log.Fatalln((err))
+	}
 	if err := c.BindJSON(&blog); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		return
