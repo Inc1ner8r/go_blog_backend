@@ -12,7 +12,7 @@ import (
 )
 
 func initDB() *gorm.DB {
-	dsn := "root:root@tcp(127.0.0.1:3306)/test"
+	dsn := "root:root@tcp(127.0.0.1:3306)/test?parseTime=true"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -35,11 +35,19 @@ func CreateBlog(c *gin.Context) {
 	}
 	fmt.Println(blog.CreatedAt)
 
-	if err := db.Create(&blog); err != nil {
+	if err := db.Create(&blog).Error; err != nil {
 		fmt.Println(err)
 	}
+
 }
 
-func displayBlogs(c *gin.Context) {
-	fmt.Println("kk")
+func DisplayBlogs(c *gin.Context) {
+	var blogs models.Blog
+
+	if err := db.Find(&blogs).Error; err != nil {
+		log.Fatal(err)
+	}
+
+	c.JSON(http.StatusOK, blogs)
+
 }
