@@ -38,11 +38,10 @@ func CreateBlog(c *gin.Context) {
 	if err := db.Create(&blog).Error; err != nil {
 		fmt.Println(err)
 	}
-
 }
 
 func DisplayBlogs(c *gin.Context) {
-	var blogs models.Blog
+	var blogs []models.Blog
 
 	if err := db.Find(&blogs).Error; err != nil {
 		log.Fatal(err)
