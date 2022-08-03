@@ -9,4 +9,4 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./dbdata:/var/lib/mysql
+      - /home/inciner8r/DragonLore/projeccs/dbdata:/var/lib/mysql
