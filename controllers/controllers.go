@@ -12,7 +12,7 @@ import (
 )
 
 func initDB() *gorm.DB {
-	dsn := "root:root@tcp(127.0.0.1:3306)/test?parseTime=true"
+	dsn := "root:root@tcp(db:3306)/test?parseTime=true"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {

@@ -4,14 +4,17 @@ services:
     image: mysql
     environment:
       MYSQL_ROOT_PASSWORD: "root"
-      MYSQL_DATABASE: "wordpress"
-      MYSQL_USER: "wordpress"
-      MYSQL_PASSWORD: "wordpress"
+      MYSQL_DATABASE: "test"
+      # MYSQL_USER: "punarv"
+      # MYSQL_PASSWORD: "password"
     ports:
       - 3306:3306
-    volumes:
-      - /home/dbdata:/var/lib/mysql
+    # volumes:
+    #   - /home/dbdata:/var/lib/mysql
   app:
     build: .
+    depends_on:
+      - db
     ports:
       - 8080:8080
+    restart: always
