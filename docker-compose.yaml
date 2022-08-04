@@ -1,3 +1,4 @@
+version: 'Compose specification'
 services:
   db:
     image: mysql
@@ -9,4 +10,8 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - /home/inciner8r/DragonLore/projeccs/dbdata:/var/lib/mysql
+      - /home/dbdata:/var/lib/mysql
+  app:
+    build: .
+    ports:
+      - 8080:8080

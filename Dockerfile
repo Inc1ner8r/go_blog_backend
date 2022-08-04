@@ -1,17 +1,16 @@
-# syntax=docker/dockerfile:1
-
-FROM golang:alpine
-
+FROM golang:alpine as builder
 WORKDIR /app
-
-COPY go.mod ./
-COPY go.sum ./
+COPY go.mod .
+COPY go.sum .
+RUN apk add build-base
 RUN go mod download
+COPY . .
+RUN apk add --no-cache git && go build -o engine . && apk del git
 
-COPY *.go ./
-
-RUN go build -o /go_blog_backend
+FROM alpine
+WORKDIR /app
+COPY --from=builder /app/engine .
 
 EXPOSE 8080
 
-CMD [ "/godocker" ]
+CMD [ "./engine" ]
