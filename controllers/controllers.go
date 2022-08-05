@@ -33,11 +33,11 @@ func CreateBlog(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		return
 	}
-	fmt.Println(blog.CreatedAt)
 
 	if err := db.Create(&blog).Error; err != nil {
 		fmt.Println(err)
 	}
+	c.JSON(http.StatusOK, gin.H{"data": blog})
 }
 
 func DisplayBlogs(c *gin.Context) {
@@ -48,5 +48,14 @@ func DisplayBlogs(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, blogs)
+}
 
+func GetBlog(c *gin.Context) {
+	var blog models.Blog
+
+	if err := db.Where("id = ?", c.Param("id")).First(&blog).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "record not found"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": blog})
 }

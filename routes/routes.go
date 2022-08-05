@@ -16,4 +16,5 @@ func Routes(router *gin.Engine) {
 
 	router.POST("/newBlog", controllers.CreateBlog)
 	router.GET("/getBlogs", controllers.DisplayBlogs)
+	router.GET("/getBlog", controllers.getBlog)
 }
