@@ -29,7 +29,6 @@ func CreateBlog(c *gin.Context) {
 	var blog models.Blog
 
 	if err := c.BindJSON(&blog); err != nil {
-		fmt.Println("err1")
 		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		return
 	}
@@ -58,4 +57,36 @@ func GetBlog(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": blog})
+}
+
+func UpdateBlog(c *gin.Context) {
+	var blog models.Blog
+	var inputBlog models.Blog
+
+	if err := db.Where("id = ?", c.Param("id")).First(&blog).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "record not found"})
+		return
+	}
+
+	//validate input
+	if err := c.ShouldBindJSON(&inputBlog); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
+		return
+	}
+
+	db.Model(&blog).Updates(inputBlog)
+	c.JSON(http.StatusOK, gin.H{"data": blog})
+}
+
+func DeleteBlog(c *gin.Context) {
+	var blog models.Blog
+
+	if err := db.Where("id = ?", c.Param("id")).First(&blog).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "record not found"})
+		return
+	}
+
+	db.Delete(&blog)
+
+	c.JSON(http.StatusOK, gin.H{"data": true})
 }
