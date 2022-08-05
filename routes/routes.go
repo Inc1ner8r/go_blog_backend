@@ -16,7 +16,7 @@ func Routes(router *gin.Engine) {
 
 	router.POST("/newBlog", controllers.CreateBlog)
 	router.GET("/getBlogs", controllers.DisplayBlogs)
-	router.GET("/getBlog", controllers.GetBlog)
-	router.PUT("/books/:id", controllers.UpdateBlog)
-	router.DELETE("/books/:id", controllers.DeleteBlog)
+	router.GET("/getBlog/:id", controllers.GetBlog)
+	router.PUT("/updateBlog/:id", controllers.UpdateBlog)
+	router.DELETE("/deleteBlog/:id", controllers.DeleteBlog)
 }
