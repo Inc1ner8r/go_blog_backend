@@ -11,8 +11,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func initDB() *gorm.DB {
-	dsn := "root:root@tcp(db:3306)/test?parseTime=true"
+func InitDB() *gorm.DB {
+	dsn := "root:root@tcp(127.0.0.1:3306)/test?parseTime=true"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -23,7 +23,7 @@ func initDB() *gorm.DB {
 	return db
 }
 
-var db = initDB()
+var db = InitDB()
 
 func CreateBlog(c *gin.Context) {
 	var blog models.Blog
@@ -87,6 +87,5 @@ func DeleteBlog(c *gin.Context) {
 	}
 
 	db.Delete(&blog)
-
 	c.JSON(http.StatusOK, gin.H{"data": true})
 }
