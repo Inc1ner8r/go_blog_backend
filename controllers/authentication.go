@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -37,4 +38,23 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"data": "unauthorized"})
 	}
 
+	expirationTime := time.Now().Add(time.Hour * 2)
+
+	claims := &Claims{
+		Username: credentials.Username,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expirationTime.Unix(),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(jwt_key)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"data": err.Error()})
+	}
+	cookie, err := c.Cookie("token")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"data": err.Error()})
+	}
+
+	c.SetCookie(cookie, tokenString, int(expirationTime.Hour()-time.Now().Hour()), "/", "localhost", false, true)
 }
