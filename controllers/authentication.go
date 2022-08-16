@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/inciner8r/blog_backend_go/models"
 )
 
 var jwt_key = []byte("secret_key")
@@ -23,6 +24,19 @@ type Credentials struct {
 type Claims struct {
 	Username string `json:"username"`
 	jwt.StandardClaims
+}
+
+func Register(c *gin.Context) {
+	var user models.User
+
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
+		return
+	}
+
+	db.Create(&user)
+
+	c.JSON(http.StatusOK, gin.H{"data": user})
 }
 
 func Login(c *gin.Context) {

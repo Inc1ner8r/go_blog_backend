@@ -19,4 +19,6 @@ func Routes(router *gin.Engine) {
 	router.GET("/getBlog/:id", controllers.GetBlog)
 	router.PUT("/updateBlog/:id", controllers.UpdateBlog)
 	router.DELETE("/deleteBlog/:id", controllers.DeleteBlog)
+	router.POST("/register", controllers.Register)
+	router.GET("/login", controllers.Login)
 }
