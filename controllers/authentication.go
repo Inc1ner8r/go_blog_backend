@@ -41,15 +41,20 @@ func Register(c *gin.Context) {
 
 func Login(c *gin.Context) {
 	var credentials Credentials
+	var expected Credentials
 	if err := c.BindJSON(&credentials); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		return
 	}
 
-	expectedPassword, ok := Users[credentials.Username]
+	if err := db.Table("users").Where("username = ?", credentials.Username).First(&expected).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"data": err.Error()})
+		return
+	}
 
-	if !ok || expectedPassword != credentials.Password {
-		c.JSON(http.StatusUnauthorized, gin.H{"data": "unauthorized"})
+	if expected.Password != credentials.Password {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
+		return
 	}
 
 	expirationTime := time.Now().Add(time.Hour * 2)
@@ -65,10 +70,40 @@ func Login(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"data": err.Error()})
 	}
-	cookie, err := c.Cookie("token")
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"data": err.Error()})
-	}
 
-	c.SetCookie(cookie, tokenString, int(expirationTime.Hour()-time.Now().Hour()), "/", "localhost", false, true)
+	c.SetCookie("token", tokenString, int(expirationTime.Hour()-time.Now().Hour()), "/", "localhost", false, true)
 }
+
+// func Login(c *gin.Context) {
+// 	var credentials Credentials
+// 	if err := c.BindJSON(&credentials); err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
+// 		return
+// 	}
+
+// 	expectedPassword, ok := Users[credentials.Username]
+
+// 	if !ok || expectedPassword != credentials.Password {
+// 		c.JSON(http.StatusUnauthorized, gin.H{"data": "unauthorized"})
+// 	}
+
+// 	expirationTime := time.Now().Add(time.Hour * 2)
+
+// 	claims := &Claims{
+// 		Username: credentials.Username,
+// 		StandardClaims: jwt.StandardClaims{
+// 			ExpiresAt: expirationTime.Unix(),
+// 		},
+// 	}
+// 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)t
+// 	tokenString, err := token.SignedString(jwt_key)
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"data": err.Error()})
+// 	}
+// 	cookie, err := c.Cookie("token")
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"data": err.Error()})
+// 	}
+
+// 	c.SetCookie(cookie, tokenString, int(expirationTime.Hour()-time.Now().Hour()), "/", "localhost", false, true)
+// }
