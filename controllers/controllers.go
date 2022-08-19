@@ -44,7 +44,7 @@ func DisplayBlogs(c *gin.Context) {
 	var blogs []models.Blog
 
 	if err := db.Find(&blogs).Error; err != nil {
-		log.Fatal(err)
+		c.JSON(http.StatusNotFound, gin.H{"msg": err.Error()})
 	}
 
 	c.JSON(http.StatusOK, blogs)

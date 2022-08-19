@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/inciner8r/blog_backend_go/models"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var jwt_key = []byte("secret_key")
@@ -27,12 +28,20 @@ type Claims struct {
 }
 
 func Register(c *gin.Context) {
+
 	var user models.User
 
 	if err := c.BindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		return
 	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 8)
+	if err != nil {
+		return
+	}
+
+	user.Password = string(hash)
 
 	db.Create(&user)
 
@@ -52,8 +61,8 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	if expected.Password != credentials.Password {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
+	if err := bcrypt.CompareHashAndPassword([]byte(expected.Password), []byte(credentials.Password)); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
 		return
 	}
 
