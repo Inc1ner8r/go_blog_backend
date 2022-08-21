@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -80,7 +81,24 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"data": err.Error()})
 	}
 
-	c.SetCookie("token", tokenString, int(expirationTime.Hour()-time.Now().Hour()), "/", "localhost", false, true)
+	c.SetCookie("jwt", tokenString, int(expirationTime.Hour()-time.Now().Hour()), "/", "localhost", false, true)
+	fmt.Println(c.Cookie("jwt"))
+}
+
+func ValidateJWT(c *gin.Context) {
+	cookie, err := c.Cookie("jwt")
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"message": "cookie not found"})
+		return
+	}
+	token, err := jwt.ParseWithClaims(cookie, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+		return jwt_key, nil
+	})
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
+	}
+	claims := token.Claims.(*Claims)
+	fmt.Println(claims.Username)
 }
 
 // func Login(c *gin.Context) {

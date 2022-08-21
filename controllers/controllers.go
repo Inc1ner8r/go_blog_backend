@@ -41,6 +41,7 @@ func CreateBlog(c *gin.Context) {
 }
 
 func DisplayBlogs(c *gin.Context) {
+	ValidateJWT(c)
 	var blogs []models.Blog
 
 	if err := db.Find(&blogs).Error; err != nil {
