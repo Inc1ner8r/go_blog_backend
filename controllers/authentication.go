@@ -100,37 +100,3 @@ func ValidateJWT(c *gin.Context) {
 	claims := token.Claims.(*Claims)
 	fmt.Println(claims.Username)
 }
-
-// func Login(c *gin.Context) {
-// 	var credentials Credentials
-// 	if err := c.BindJSON(&credentials); err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
-// 		return
-// 	}
-
-// 	expectedPassword, ok := Users[credentials.Username]
-
-// 	if !ok || expectedPassword != credentials.Password {
-// 		c.JSON(http.StatusUnauthorized, gin.H{"data": "unauthorized"})
-// 	}
-
-// 	expirationTime := time.Now().Add(time.Hour * 2)
-
-// 	claims := &Claims{
-// 		Username: credentials.Username,
-// 		StandardClaims: jwt.StandardClaims{
-// 			ExpiresAt: expirationTime.Unix(),
-// 		},
-// 	}
-// 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)t
-// 	tokenString, err := token.SignedString(jwt_key)
-// 	if err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"data": err.Error()})
-// 	}
-// 	cookie, err := c.Cookie("token")
-// 	if err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"data": err.Error()})
-// 	}
-
-// 	c.SetCookie(cookie, tokenString, int(expirationTime.Hour()-time.Now().Hour()), "/", "localhost", false, true)
-// }
