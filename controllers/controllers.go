@@ -27,6 +27,7 @@ func InitDB() *gorm.DB {
 var db = InitDB()
 
 func CreateBlog(c *gin.Context) {
+	ValidateJWT(c)
 	var blog models.Blog
 
 	if err := c.BindJSON(&blog); err != nil {
@@ -52,6 +53,7 @@ func DisplayBlogs(c *gin.Context) {
 }
 
 func GetBlog(c *gin.Context) {
+	ValidateJWT(c)
 	var blog models.Blog
 
 	if err := db.Where("id = ?", c.Param("id")).First(&blog).Error; err != nil {
@@ -62,6 +64,7 @@ func GetBlog(c *gin.Context) {
 }
 
 func UpdateBlog(c *gin.Context) {
+	ValidateJWT(c)
 	var blog models.Blog
 	var inputBlog models.Blog
 
@@ -81,6 +84,7 @@ func UpdateBlog(c *gin.Context) {
 }
 
 func DeleteBlog(c *gin.Context) {
+	ValidateJWT(c)
 	var blog models.Blog
 
 	if err := db.Where("id = ?", c.Param("id")).First(&blog).Error; err != nil {

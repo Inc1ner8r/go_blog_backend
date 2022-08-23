@@ -21,4 +21,5 @@ func Routes(router *gin.Engine) {
 	router.DELETE("/deleteBlog/:id", controllers.DeleteBlog)
 	router.POST("/register", controllers.Register)
 	router.POST("/login", controllers.Login)
+	router.POST("/logout", controllers.Logout)
 }

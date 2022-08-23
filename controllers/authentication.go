@@ -85,11 +85,11 @@ func Login(c *gin.Context) {
 	fmt.Println(c.Cookie("jwt"))
 }
 
-func ValidateJWT(c *gin.Context) {
+func ValidateJWT(c *gin.Context) string {
 	cookie, err := c.Cookie("jwt")
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"message": "cookie not found"})
-		return
+		return ""
 	}
 	token, err := jwt.ParseWithClaims(cookie, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return jwt_key, nil
@@ -99,4 +99,10 @@ func ValidateJWT(c *gin.Context) {
 	}
 	claims := token.Claims.(*Claims)
 	fmt.Println(claims.Username)
+	return claims.Username
+}
+
+func Logout(c *gin.Context) {
+	c.SetCookie("jwt", "", -1, "/", "localhost", false, true)
+	c.JSON(http.StatusOK, gin.H{"message": "logout"})
 }
