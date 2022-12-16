@@ -32,7 +32,7 @@ func Register(c *gin.Context) {
 
 	var user models.User
 
-	if err := c.BindJSON(&user); err != nil {
+	if err := c. (&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		return
 	}
@@ -67,7 +67,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	expirationTime := time.Now().Add(time.Hour * 2)
+		expirationTime := time.Now().Add(time.Hour * 2)
 
 	claims := &Claims{
 		Username: credentials.Username,
@@ -103,6 +103,6 @@ func ValidateJWT(c *gin.Context) string {
 }
 
 func Logout(c *gin.Context) {
-	c.SetCookie("jwt", "", -1, "/", "localhost", false, true)
+	c.SetCookie("jwt", "", -1, "/", false, true)
 	c.JSON(http.StatusOK, gin.H{"message": "logout"})
 }

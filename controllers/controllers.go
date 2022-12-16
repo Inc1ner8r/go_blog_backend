@@ -11,8 +11,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitDB() *gorm.DB {
-	dsn := "root:root@tcp(127.0.0.1:3306)/test?parseTime=true"
+func InitDB(dbname string) *gorm.DB {
+	dsn := "root:root@tcp(127.0.0.1:3306)/" + dbname + "?parseTime=true"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -24,7 +24,7 @@ func InitDB() *gorm.DB {
 	return db
 }
 
-var db = InitDB()
+var db = InitDB("test")
 
 func CreateBlog(c *gin.Context) {
 	ValidateJWT(c)
@@ -46,7 +46,7 @@ func DisplayBlogs(c *gin.Context) {
 	var blogs []models.Blog
 
 	if err := db.Find(&blogs).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"msg": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"msg": err})
 	}
 
 	c.JSON(http.StatusOK, blogs)
